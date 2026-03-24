@@ -35,42 +35,6 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
         }
     }
 
-    @Override
-    public List<Vehicle> getVehicles() {
-
-        List<Vehicle> copy = new ArrayList<>();
-
-        for (Vehicle v : vehicles) {
-
-            if (v instanceof Car c) {
-
-                copy.add(new Car(
-                        c.getId(),
-                        c.getBrand(),
-                        c.getModel(),
-                        c.getYear(),
-                        c.getPrice(),
-                        c.isRented()
-                ));
-            }
-
-            else if (v instanceof Motorcycle m) {
-
-                copy.add(new Motorcycle(
-                        m.getId(),
-                        m.getBrand(),
-                        m.getModel(),
-                        m.getYear(),
-                        m.getPrice(),
-                        m.isRented(),
-                        m.getCategory()
-                ));
-            }
-
-        }
-
-        return copy;
-    }
 
     @Override
     public void save() {
@@ -131,5 +95,73 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void add(Vehicle vehicle) {
+        if(getVehicle(vehicle.getId()) ==null){
+            vehicles.add(vehicle);
+            save();
+        } else {
+            System.out.println("pojazd o ID " + vehicle.getId() + " już istnieje");
+        }
+
+    }
+
+    @Override
+    public void remove(String id) {
+        boolean removed = vehicles.removeIf(v -> v.getId().equals(id));
+        if(removed){
+            save();
+            System.out.println("Usunieto: " +id);
+        } else {
+            System.out.println("nie znaleziono");
+        }
+    }
+
+    @Override
+    public Vehicle getVehicle(String id) {
+        for (Vehicle v : vehicles) {
+            if (v.getId().equals(id)) {
+                return v;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<Vehicle> getVehicles() {
+        List<Vehicle> copy = new ArrayList<>();
+
+        for (Vehicle v : vehicles) {
+
+            if (v instanceof Car c) {
+
+                copy.add(new Car(
+                        c.getId(),
+                        c.getBrand(),
+                        c.getModel(),
+                        c.getYear(),
+                        c.getPrice(),
+                        c.isRented()
+                ));
+            }
+
+            else if (v instanceof Motorcycle m) {
+
+                copy.add(new Motorcycle(
+                        m.getId(),
+                        m.getBrand(),
+                        m.getModel(),
+                        m.getYear(),
+                        m.getPrice(),
+                        m.isRented(),
+                        m.getCategory()
+                ));
+            }
+
+        }
+
+        return copy;
     }
 }
