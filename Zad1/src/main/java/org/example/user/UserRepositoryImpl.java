@@ -26,8 +26,6 @@ public class UserRepositoryImpl implements IUserRepository {
                 );
             }
         }
-
-
         return null;
     }
 
@@ -88,7 +86,6 @@ public class UserRepositoryImpl implements IUserRepository {
         } catch (IOException e) {
             System.out.println("Blad zapisu" + e.getMessage());
         }
-
     }
 
     public void load() {
@@ -111,7 +108,6 @@ public class UserRepositoryImpl implements IUserRepository {
         } catch (IOException e) {
             System.out.println("blad odczytu" + e.getMessage());
         }
-
     }
 }
 

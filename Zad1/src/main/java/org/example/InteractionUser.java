@@ -34,7 +34,7 @@ public class InteractionUser {
                             userMenu(currentUser.getLogin());
                         }
                     } else {
-                        System.out.println("Błąd logowania!");
+                        System.out.println("Blad logowania!!!!");
                     }
                 }
 
@@ -44,10 +44,10 @@ public class InteractionUser {
                     System.out.println("Podaj haslo");
                     String passwordRejestracja = scanner.nextLine();
                     boolean sukces = userRepo.add(new User(loginRejestracja, Hasher.hashPassword(passwordRejestracja), "USER", null));
-                    if(sukces){
+                    if (sukces) {
                         System.out.println("Zalogowano");
                     } else {
-                        System.out.println("Blad login juz istnieje");
+                        System.out.println("Blad: login juz istnieje!!!!!!");
                     }
                 }
 
@@ -70,11 +70,16 @@ public class InteractionUser {
             switch (choice) {
                 case "1" -> vehicleRepo.getVehicles().forEach(System.out::println);
                 case "2" -> {
-                    System.out.print("ID: "); String id = scanner.nextLine();
-                    System.out.print("Marka: "); String b = scanner.nextLine();
-                    System.out.print("Model: "); String m = scanner.nextLine();
-                    System.out.print("Rok: "); int y = Integer.parseInt(scanner.nextLine());
-                    System.out.print("Cena: "); double p = Double.parseDouble(scanner.nextLine());
+                    System.out.print("ID: ");
+                    String id = scanner.nextLine();
+                    System.out.print("Marka: ");
+                    String b = scanner.nextLine();
+                    System.out.print("Model: ");
+                    String m = scanner.nextLine();
+                    System.out.print("Rok: ");
+                    int y = Integer.parseInt(scanner.nextLine());
+                    System.out.print("Cena: ");
+                    double p = Double.parseDouble(scanner.nextLine());
                     vehicleRepo.add(new Car(id, b, m, y, p, false));
                 }
                 case "3" -> {
@@ -94,10 +99,12 @@ public class InteractionUser {
                 case "5" -> {
                     System.out.print("Podaj login użytkownika do usunięcia: ");
                     String toRemove = scanner.nextLine();
-                    if(userRepo.remove(toRemove)) System.out.println("usunieto.");
+                    if (userRepo.remove(toRemove)) System.out.println("usunieto.");
                     else System.out.println("Nie można usunac brak usera lub ma wypożyczone auto");
                 }
-                case "6" -> { return; }
+                case "6" -> {
+                    return;
+                }
             }
         }
     }
@@ -146,7 +153,9 @@ public class InteractionUser {
                         System.out.println("Auto: " + vehicleRepo.getVehicle(curr.getRentedVehicleId()));
                     }
                 }
-                case "5" -> { return; }
+                case "5" -> {
+                    return;
+                }
             }
         }
     }
