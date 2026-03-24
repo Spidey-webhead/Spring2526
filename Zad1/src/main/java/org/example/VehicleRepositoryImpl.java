@@ -7,7 +7,7 @@ import java.util.List;
 public class VehicleRepositoryImpl implements IVehicleRepository {
 
     private List<Vehicle> vehicles = new ArrayList<>();
-    private static final String FILE = "vehicles.txt";
+    private static final String FILE = "vehicles.csv";
 
     public VehicleRepositoryImpl() {
         load();
