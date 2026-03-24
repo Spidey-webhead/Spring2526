@@ -1,9 +1,7 @@
 package org.example;
 
-import org.example.user.Authentication;
-import org.example.user.IUserRepository;
-import org.example.user.User;
-import org.example.user.UserRepositoryImpl;
+import org.example.user.*;
+
 import java.util.Scanner;
 
 public class InteractionUser {
@@ -15,34 +13,57 @@ public class InteractionUser {
 
     public static void main(String[] args) {
         while (true) {
-            System.out.println("\n--- LOGOWANIE ---");
-            System.out.print("Login: ");
-            String login = scanner.nextLine();
-            System.out.print("Hasło: ");
-            String password = scanner.nextLine();
+            System.out.println("\n    LOGOWANIE    ");
+            System.out.println("1 - Logowanie");
+            System.out.println("2 - Rejestracja");
 
-            User currentUser = auth.authenticateLogs(login, password);
+            String choice = scanner.nextLine();
+            switch (choice) {
+                case "1" -> {
+                    System.out.print("Podaj login: ");
+                    String login = scanner.nextLine();
+                    System.out.print("Podaj haslo: ");
+                    String password = scanner.nextLine();
 
-            if (currentUser != null) {
-                if ("ADMIN".equalsIgnoreCase(currentUser.getRole())) {
-                    adminMenu();
-                } else {
-                    userMenu(currentUser.getLogin());
+                    User currentUser = auth.authenticateLogs(login, password);
+
+                    if (currentUser != null) {
+                        if ("ADMIN".equalsIgnoreCase(currentUser.getRole())) {
+                            adminMenu();
+                        } else {
+                            userMenu(currentUser.getLogin());
+                        }
+                    } else {
+                        System.out.println("Błąd logowania!");
+                    }
                 }
-            } else {
-                System.out.println("Błąd logowania!");
+
+                case "2" -> {
+                    System.out.println("Podaj login do rejestracji: ");
+                    String loginRejestracja = scanner.nextLine();
+                    System.out.println("Podaj haslo");
+                    String passwordRejestracja = scanner.nextLine();
+                    boolean sukces = userRepo.add(new User(loginRejestracja, Hasher.hashPassword(passwordRejestracja), "USER", null));
+                    if(sukces){
+                        System.out.println("Zalogowano");
+                    } else {
+                        System.out.println("Blad login juz istnieje");
+                    }
+                }
+
             }
         }
     }
 
     private static void adminMenu() {
         while (true) {
-            System.out.println("\n--- ADMIN ---");
+            System.out.println("\n    ADMIN    ");
             System.out.println("1 - Lista pojazdów");
             System.out.println("2 - Dodaj pojazd");
             System.out.println("3 - Usuń pojazd");
-            System.out.println("4 - Lista użytkowników");
-            System.out.println("5 - Wyloguj");
+            System.out.println("4 - Lista uzytkownikow");
+            System.out.println("5 - Usun uzytkownika");
+            System.out.println("6 - Wyloguj");
 
             String choice = scanner.nextLine();
 
@@ -70,7 +91,13 @@ public class InteractionUser {
                         }
                     }
                 }
-                case "5" -> { return; }
+                case "5" -> {
+                    System.out.print("Podaj login użytkownika do usunięcia: ");
+                    String toRemove = scanner.nextLine();
+                    if(userRepo.remove(toRemove)) System.out.println("usunieto.");
+                    else System.out.println("Nie można usunac brak usera lub ma wypożyczone auto");
+                }
+                case "6" -> { return; }
             }
         }
     }
@@ -79,7 +106,7 @@ public class InteractionUser {
         while (true) {
             User curr = userRepo.getUser(login);
 
-            System.out.println("\n--- USER ---");
+            System.out.println("\n    USER    ");
             System.out.println("1 - Lista pojazdów");
             System.out.println("2 - Wypożycz");
             System.out.println("3 - Zwróć");
@@ -92,7 +119,7 @@ public class InteractionUser {
                 case "1" -> vehicleRepo.getVehicles().forEach(System.out::println);
                 case "2" -> {
                     if (curr.getRentedVehicleId() != null) {
-                        System.out.println("Masz już pojazd!");
+                        System.out.println("Masz już pojazd");
                         break;
                     }
                     System.out.print("ID pojazdu: ");
@@ -124,3 +151,7 @@ public class InteractionUser {
         }
     }
 }
+
+
+//user1 h:user1
+//user2 h:user2
