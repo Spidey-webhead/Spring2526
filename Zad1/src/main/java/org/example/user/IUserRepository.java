@@ -8,4 +8,6 @@ public interface IUserRepository {
     boolean update(User user);
     void save();
     void load();
+    boolean add(User user);
+    boolean remove(String login);
 }

@@ -58,6 +58,27 @@ public class UserRepositoryImpl implements IUserRepository {
         return false;
     }
 
+    @Override
+    public boolean add(User user) {
+        if (getUser(user.getLogin()) != null) {
+            return false;
+        }
+        users.add(user);
+        save();
+        return true;
+    }
+
+    @Override
+    public boolean remove(String login) {
+        User u = getUser(login);
+        if (u != null && u.getRentedVehicleId() == null) {
+            users.removeIf(user -> user.getLogin().equals(login));
+            save();
+            return true;
+        }
+        return false;
+    }
+
     public void save() {
         try (PrintWriter writer = new PrintWriter((new FileWriter(FILE)))) {
             for (User u : users) {
