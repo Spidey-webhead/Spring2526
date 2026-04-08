@@ -1,4 +1,6 @@
-package org.example;
+package com.umcsuser.carrent;
+
+import com.umcsuser.carrent.models.Vehicle;
 
 import java.util.List;
 

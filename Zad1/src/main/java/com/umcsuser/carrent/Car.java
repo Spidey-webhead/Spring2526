@@ -1,4 +1,6 @@
-package org.example;
+package com.umcsuser.carrent;
+
+import com.umcsuser.carrent.models.Vehicle;
 
 public class Car extends Vehicle {
 

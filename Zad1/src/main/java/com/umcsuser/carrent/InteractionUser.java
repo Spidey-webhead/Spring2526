@@ -1,5 +1,8 @@
-package org.example;
+package com.umcsuser.carrent;
 
+import com.umcsuser.carrent.models.User;
+import com.umcsuser.carrent.models.Vehicle;
+import com.umcsuser.carrent.user.*;
 import org.example.user.*;
 
 import java.util.Scanner;

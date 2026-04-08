@@ -1,4 +1,4 @@
-package org.example.user;
+package com.umcsuser.carrent.user;
 
 import org.apache.commons.codec.digest.DigestUtils;
 

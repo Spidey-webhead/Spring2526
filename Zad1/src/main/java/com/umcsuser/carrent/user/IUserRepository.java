@@ -1,4 +1,6 @@
-package org.example.user;
+package com.umcsuser.carrent.user;
+
+import com.umcsuser.carrent.models.User;
 
 import java.util.List;
 

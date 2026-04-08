@@ -1,6 +1,6 @@
-package org.example.user;
+package com.umcsuser.carrent.user;
 
-import org.example.Vehicle;
+import com.umcsuser.carrent.models.User;
 
 import java.io.*;
 import java.util.ArrayList;
