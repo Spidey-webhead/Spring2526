@@ -41,7 +41,7 @@ public class Vehicle {
   }
 
     public Map<String, Object> getAttributes(){
-        return Collections.unmodifiableMap(attributes);
+      return Collections.unmodifiableMap(attributes);
     }
 
     public Object getAttributes(String key) {
