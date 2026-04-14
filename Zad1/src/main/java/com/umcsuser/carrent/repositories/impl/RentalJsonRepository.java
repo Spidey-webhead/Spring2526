@@ -14,12 +14,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class RentalJsonRepository implements RentalRepository {
-    private final JsonFileStorage<Rental> storage;
     private final List<Rental> rentals;
-
+    private final JsonFileStorage<Rental> storage = new JsonFileStorage<>("rentals.json",
+            new TypeToken<List<Rental>>() {}.getType());
     public RentalJsonRepository(){
-        Type type = new TypeToken<List<Rental>>(){}.getType();
-        this.storage = new JsonFileStorage<>("rentals.json", type);
         this.rentals = new ArrayList<>(storage.load());
     }
     @Override
@@ -60,4 +58,6 @@ public class RentalJsonRepository implements RentalRepository {
                 .findFirst()
                 .map(Rental::copy);
     }
+
+
 }

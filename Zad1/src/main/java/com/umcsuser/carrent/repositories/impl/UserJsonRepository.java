@@ -13,15 +13,17 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class UserJsonRepository implements UserRepository {
-    private final JsonFileStorage<User> storage;
+
     private List<User> users;
+    private final JsonFileStorage<User> storage =
+            new JsonFileStorage<>("users.json",
+                    new TypeToken<List<User>>() {}.getType());
+
+    private final List<User> configs;
 
     public UserJsonRepository(){
-        Type type = new TypeToken<List<User>>(){}.getType();
-        this.storage = new JsonFileStorage<>("users.json", type);
-        this.users = new ArrayList<>(storage.load());
+        this.configs = new ArrayList<>(storage.load());
     }
-
     @Override
     public List<User> findAll() {
         return users.stream().map(User::copy).toList();

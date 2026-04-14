@@ -12,12 +12,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class VehicleJsonRepository implements VehicleRepository {
-    private final JsonFileStorage<Vehicle> storage;
+    private final JsonFileStorage<Vehicle> storage = new JsonFileStorage<>("vehicles.json",
+            new TypeToken<List<Vehicle>>() {}.getType());
     private List<Vehicle> vehicles;
 
     public VehicleJsonRepository(){
-        Type type = new TypeToken<List<Vehicle>>(){}.getType();
-        this.storage = new JsonFileStorage<>("vehicles.json", type);
         this.vehicles = new ArrayList<>(storage.load());
     }
 

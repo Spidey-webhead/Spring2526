@@ -18,4 +18,7 @@ public class AuthService {
                 .filter(user -> BCrypt.checkpw(password, user.getPasswordHash()))
                 .map(User::copy);
     }
+
+    public boolean register(String s, String s1) {
+    }
 }
