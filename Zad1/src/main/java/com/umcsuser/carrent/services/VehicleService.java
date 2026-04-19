@@ -1,19 +1,22 @@
 package com.umcsuser.carrent.services;
 
 import com.umcsuser.carrent.models.Vehicle;
+import com.umcsuser.carrent.repositories.RentalRepository;
 import com.umcsuser.carrent.repositories.VehicleRepository;
 
+import java.lang.module.FindException;
 import java.util.List;
 import java.util.Map;
 
 public class VehicleService {
     private final VehicleValidator vehicleValidator;
     private final VehicleRepository vehicleRepository;
+    private final RentalRepository rentalRepository;
 
-
-    public VehicleService(VehicleValidator vehicleValidator, VehicleRepository vehicleRepository) {
+    public VehicleService(VehicleValidator vehicleValidator, VehicleRepository vehicleRepository, RentalRepository rentalRepository) {
         this.vehicleValidator = vehicleValidator;
         this.vehicleRepository = vehicleRepository;
+        this.rentalRepository = rentalRepository;
     }
 
     public Vehicle addVehicle(Vehicle vehicle) {
@@ -26,22 +29,31 @@ public class VehicleService {
     }
 
     public Object isVehicleRented(String id) {
-        return
-
+        return vehicleRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Nie jest wypozyczony " + id));
 
     }
 
-    public Map<Object, Object> findAvailableVehicles(String id) {
-        return
+    public List<Vehicle> findAvailableVehicles() {
+        return vehicleRepository.findAll().stream()
+                .filter(vehicle -> !isVehicleCurrentRented(vehicle.getId()))
+                .toList();
     }
 
-    public Object findById(String vehicleId) {
+    public Vehicle findById(String vehicleId) {
         return vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new IllegalArgumentException("Niepoprawne id" + vehicleId));
     }
 
-    public void removeVehicle(String s) {
+    public void removeVehicle(String id) {
+      if(isVehicleCurrentRented(id)){
+          throw new IllegalArgumentException("ten pojazd jest wypozyczony");
+      }
+      vehicleRepository.deleteById(id);
+    }
 
+    public boolean isVehicleCurrentRented(String id){
+        return rentalRepository.findByVehicleIdAndReturnDateIsNull(id).isPresent();
     }
 }
 

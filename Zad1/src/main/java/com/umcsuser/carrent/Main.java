@@ -25,7 +25,7 @@ public class Main {
         AuthService authService = new AuthService(userRepository);
         VehicleCategoryService categoryConfigService = new VehicleCategoryService(categoryConfigRepository);
         VehicleValidator vehicleValidator = new VehicleValidator(categoryConfigService);
-        VehicleService vehicleService = new VehicleService(vehicleRepository, rentalRepository, vehicleValidator);
+        VehicleService vehicleService = new VehicleService(vehicleValidator, vehicleRepository, rentalRepository);
         RentalService rentalService = new RentalService(rentalRepository, vehicleRepository);
         UserService userService = new UserService(userRepository, rentalService);
 

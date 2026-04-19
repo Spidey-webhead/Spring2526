@@ -19,10 +19,9 @@ public class UserJsonRepository implements UserRepository {
             new JsonFileStorage<>("users.json",
                     new TypeToken<List<User>>() {}.getType());
 
-    private final List<User> configs;
 
     public UserJsonRepository(){
-        this.configs = new ArrayList<>(storage.load());
+        this.users = new ArrayList<>(storage.load());
     }
     @Override
     public List<User> findAll() {

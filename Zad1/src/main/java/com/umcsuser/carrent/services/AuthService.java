@@ -1,5 +1,6 @@
 package com.umcsuser.carrent.services;
 
+import com.umcsuser.carrent.models.Role;
 import com.umcsuser.carrent.models.User;
 import com.umcsuser.carrent.repositories.UserRepository;
 import org.mindrot.jbcrypt.BCrypt;
@@ -19,6 +20,18 @@ public class AuthService {
                 .map(User::copy);
     }
 
-    public boolean register(String s, String s1) {
+    public boolean register(String login, String password) {
+        if(userRepo.findByLogin(login).isPresent()) {
+            return false;
+        }
+            String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
+            User newUser = User.builder()
+                    .login(login)
+                    .passwordHash(hashed)
+                    .role(Role.USER)
+                    .build();
+            userRepo.save(newUser);
+            return true;
+        }
     }
-}
+

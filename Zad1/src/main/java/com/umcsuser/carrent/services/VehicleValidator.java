@@ -17,6 +17,7 @@ public class VehicleValidator {
         if (vehicle == null) throw new IllegalArgumentException("Pojazd nie może być nullem.");
 
         validateBaseFields(vehicle);
+        VehicleCategoryConfig config = configService.getByCategory(vehicle.getCategory());
         validateAttributes(vehicle.getAttributes(), configService.getByCategory(vehicle.getCategory()));
     }
 
@@ -31,7 +32,8 @@ public class VehicleValidator {
     }
 
     private void validateAttributes(Map<String, Object> actualAttributes, VehicleCategoryConfig config) {
-        Map<String, String> expectedAttributes = config.getAttributes();
+        Map<String, Object> expectedAttributes = config.getAttributes();
+
         for (String actualName : actualAttributes.keySet()) {
             if (!expectedAttributes.containsKey(actualName)) {
                 throw new IllegalArgumentException("Nieobsługiwany atrybut dla kategorii "
@@ -39,27 +41,28 @@ public class VehicleValidator {
             }
         }
 
-        expectedAttributes.forEach((attrName, expectedType) -> {
+        expectedAttributes.forEach((attrName, expectedTypeObj) -> {
+            String expectedType = (String) expectedTypeObj;
             Object value = actualAttributes.get(attrName);
+
             if (value == null) {
                 throw new IllegalArgumentException("Brak wymaganego atrybutu: " + attrName);
-            }
-            if (expectedType.equalsIgnoreCase("string") && value instanceof String str) {
-                requireNonBlank(str, "Atrybut " + attrName + " nie może być pusty.");
             }
 
             boolean isValidType = switch (expectedType.toLowerCase()) {
                 case "string" -> value instanceof String;
-                case "number" -> value instanceof Number;
+                case "number", "double" -> value instanceof Number;
                 case "boolean" -> value instanceof Boolean;
-                case "integer" -> value instanceof Integer;
-                default -> throw new IllegalArgumentException("Nieobsługiwany typ w configu: " + expectedType);
+                case "integer", "int" -> value instanceof Integer || value instanceof Double;
+                default -> true;
             };
+
             if (!isValidType) {
                 throw new IllegalArgumentException("Atrybut " + attrName + " musi być typu " + expectedType + ".");
             }
         });
     }
+
     private void requireNonBlank(String value, String message) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException(message);
