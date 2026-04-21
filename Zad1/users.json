@@ -1,1 +1,6 @@
-[{"id":"6fdc6914-ea98-4154-9475-75677bc9b355","login":"admin","passwordHash":"$2a$10$T2vbMarCQJXGh4VHSIKv9e17goMcKuc0Cf2ZK4AB46uUU.4/IZir2","role":"ADMIN"},{"id":"caab7ee4-1714-4ca8-bb36-de0a57853c31","login":"user","passwordHash":"$2a$10$z7CqxN5ELHIpYThlt7.ijOrOKO0Un2kKIPudZFmjyaJ36K7PHQLqC","role":"USER"}]
+[{"id":"6fdc6914-ea98-4154-9475-75677bc9b355","login":"admin","passwordHash":"$2a$10$T2vbMarCQJXGh4VHSIKv9e17goMcKuc0Cf2ZK4AB46uUU.4/IZir2","role":"ADMIN"},
+  {"id":"caab7ee4-1714-4ca8-bb36-de0a57853c31","login":"user","passwordHash":"$2a$10$z7CqxN5ELHIpYThlt7.ijOrOKO0Un2kKIPudZFmjyaJ36K7PHQLqC","role":"USER"},
+  {"id":"4de115c7-f169-46e1-8091-e0d81b7e1df7","login":"user1","passwordHash":"$2a$10$NBq8NB.QPxfZ/1wDsnFWnuvObB8M116rOG3yUtFmtnhaVSeCM4BJy","role":"USER"},
+  {"id":"be83ab1d-d909-4d5f-be30-1a804f814bb4","login":"user2","passwordHash":"$2a$10$Z5N23ibDMUwRVNpSPiHdQO8xTDg3UZD.rnhM65vudrVTdQNfAKdEG","role":"USER"},
+  {"id":"39a794a4-75f4-49fd-912f-5b312bd83bdd","login":"user3","passwordHash":"$2a$10$CdkQzVa0oV5qA9VoNLuKdePEEEf3/m7tQ7LQupatMOVQLemBOrbJ2","role":"USER"},
+  {"id":"9b61c40f-dade-455e-aede-241443dd4e7c","login":"user5","passwordHash":"$2a$10$a/gIyWgWIiyLpAnWYOW1ZeMfEXsn6nXkHVuvYq1tWfK0Ol/CKneHq","role":"USER"}]

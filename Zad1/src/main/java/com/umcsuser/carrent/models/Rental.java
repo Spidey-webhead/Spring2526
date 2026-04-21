@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(of = "id")
+//@EqualsAndHashCode(of = "id")
 @ToString
 public class Rental {
 

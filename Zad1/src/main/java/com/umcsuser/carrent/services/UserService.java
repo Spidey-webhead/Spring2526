@@ -2,18 +2,21 @@ package com.umcsuser.carrent.services;
 
 import com.umcsuser.carrent.models.Rental;
 import com.umcsuser.carrent.models.User;
+import com.umcsuser.carrent.repositories.RentalRepository;
 import com.umcsuser.carrent.repositories.UserRepository;
-import com.umcsuser.carrent.repositories.VehicleRepository;
 
 import java.util.List;
 
 public class UserService {
     private final UserRepository userRepository;
     private final RentalService rentalService;
+    private final RentalRepository rentalRepository;
 
-    public UserService( UserRepository userRepository, RentalService rentalService) {
+
+    public UserService(UserRepository userRepository, RentalService rentalService, RentalRepository rentalRepository) {
         this.userRepository = userRepository;
         this.rentalService = rentalService;
+        this.rentalRepository = rentalRepository;
     }
 
 
@@ -22,18 +25,28 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono uzytkownika" + id));
     }
 
-    public void deleteUser(String userToDelete, String currentId) {
-        if (userToDelete.equals(currentId)) {
-            throw new IllegalArgumentException("nie mozesz usunac samego siebie");
-        }
-            boolean hasActive = rentalService.findUserRentals(userToDelete).stream().anyMatch(Rental::isActive);
+//    public void deleteUser(String userToDelete) {
+//        if (userToDelete.equals()) {
+//            throw new IllegalArgumentException("nie mozesz usunac samego siebie");
+//        }
+//            boolean hasActive = rentalService.findUserRentals(userToDelete).stream().anyMatch(Rental::isActive);
+//
+//            if(hasActive){
+//                throw new IllegalArgumentException("nie mozna usunac uzytkownika z wypozyczeniem");
+//            }
+//            userRepository.deleteById(userToDelete);
+//    }
 
-            if(hasActive){
-                throw new IllegalArgumentException("nie mozna usunac uzytkownika z wypozyczeniem");
-            }
-            userRepository.deleteById(userToDelete);
+    public void deleteUser(String id) {
+        if(userRentedVehicle(id)){
+            throw new IllegalArgumentException("ten user ma wypozyczenie");
+        }
+        userRepository.deleteById(id);
     }
 
+    public boolean userRentedVehicle(String id){
+        return rentalRepository.findByVehicleIdAndReturnDateIsNull(id).isPresent();
+    }
 
     public List<User> findAllUsers() {
         return  userRepository.findAll();

@@ -27,13 +27,6 @@ public class VehicleCategoryConfig {
         return Collections.unmodifiableMap(attributes);
     }
 
-    public void addAttribute(String key, Object value) {
-    }
-
-    public void removeAttributes(String key) {
-        attributes.remove(key);
-    }
-
     public VehicleCategoryConfig copy(){
         return VehicleCategoryConfig.builder()
                 .category(category)
