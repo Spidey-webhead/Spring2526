@@ -29,9 +29,7 @@ public class VehicleService {
     }
 
     public Object isVehicleRented(String id) {
-        return vehicleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Nie jest wypozyczony " + id));
-
+        return isVehicleCurrentRented(id);
     }
 
     public List<Vehicle> findAvailableVehicles() {

@@ -58,6 +58,12 @@ public class RentalJsonRepository implements RentalRepository {
                 .findFirst()
                 .map(Rental::copy);
     }
+    public Optional<Rental> findByUserIdAndReturnDateIsNull(String userId) {
+        return rentals.stream()
+                .filter(rental -> rental.getUserId().equals(userId) && rental.isActive())
+                .findFirst()
+                .map(Rental::copy);
+    }
 
 
 }

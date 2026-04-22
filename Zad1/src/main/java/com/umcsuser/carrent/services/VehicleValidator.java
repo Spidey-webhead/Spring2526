@@ -18,7 +18,7 @@ public class VehicleValidator {
 
         validateBaseFields(vehicle);
         VehicleCategoryConfig config = configService.getByCategory(vehicle.getCategory());
-        validateAttributes(vehicle.getAttributes(), configService.getByCategory(vehicle.getCategory()));
+        validateAttributes(vehicle.getAttributes(), config);
     }
 
     private void validateBaseFields(Vehicle vehicle) {

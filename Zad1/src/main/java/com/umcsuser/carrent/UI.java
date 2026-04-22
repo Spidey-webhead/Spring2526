@@ -146,7 +146,7 @@ public class UI {
 
     private void deleteUser(User loggedUser) {
         try {
-            userService.deleteUser(readText("ID pojazdu do usunięcia: "));
+            userService.deleteUser(readText("ID usera do usunięcia: "));
             System.out.println("Usunięto pomyślnie.");
         } catch (Exception e) {
             System.out.println("Błąd: " + e.getMessage());

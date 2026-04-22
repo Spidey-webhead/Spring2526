@@ -25,17 +25,6 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono uzytkownika" + id));
     }
 
-//    public void deleteUser(String userToDelete) {
-//        if (userToDelete.equals()) {
-//            throw new IllegalArgumentException("nie mozesz usunac samego siebie");
-//        }
-//            boolean hasActive = rentalService.findUserRentals(userToDelete).stream().anyMatch(Rental::isActive);
-//
-//            if(hasActive){
-//                throw new IllegalArgumentException("nie mozna usunac uzytkownika z wypozyczeniem");
-//            }
-//            userRepository.deleteById(userToDelete);
-//    }
 
     public void deleteUser(String id) {
         if(userRentedVehicle(id)){
@@ -45,7 +34,7 @@ public class UserService {
     }
 
     public boolean userRentedVehicle(String id){
-        return rentalRepository.findByVehicleIdAndReturnDateIsNull(id).isPresent();
+        return rentalRepository.findByUserIdAndReturnDateIsNull(id).isPresent();
     }
 
     public List<User> findAllUsers() {
