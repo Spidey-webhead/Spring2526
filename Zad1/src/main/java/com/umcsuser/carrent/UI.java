@@ -1,7 +1,7 @@
 package com.umcsuser.carrent;
 
 import com.umcsuser.carrent.models.*;
-import com.umcsuser.carrent.services.*;
+import com.umcsuser.carrent.services.impl.*;
 
 import java.util.List;
 import java.util.Map;

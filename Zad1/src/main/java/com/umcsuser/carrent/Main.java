@@ -2,7 +2,7 @@ package com.umcsuser.carrent;
 
 import com.umcsuser.carrent.repositories.*;
 import com.umcsuser.carrent.repositories.impl.*;
-import com.umcsuser.carrent.services.*;
+import com.umcsuser.carrent.services.impl.*;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class Main {

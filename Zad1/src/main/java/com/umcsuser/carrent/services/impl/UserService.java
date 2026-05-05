@@ -1,6 +1,5 @@
-package com.umcsuser.carrent.services;
+package com.umcsuser.carrent.services.impl;
 
-import com.umcsuser.carrent.models.Rental;
 import com.umcsuser.carrent.models.User;
 import com.umcsuser.carrent.repositories.RentalRepository;
 import com.umcsuser.carrent.repositories.UserRepository;

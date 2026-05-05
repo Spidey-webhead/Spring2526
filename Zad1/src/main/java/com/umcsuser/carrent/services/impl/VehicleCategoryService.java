@@ -1,8 +1,7 @@
-package com.umcsuser.carrent.services;
+package com.umcsuser.carrent.services.impl;
 
 import com.umcsuser.carrent.models.VehicleCategoryConfig;
 import com.umcsuser.carrent.repositories.VehicleCategoryRepository;
-import com.umcsuser.carrent.repositories.impl.VehicleCategoryConfigJsonRepository;
 
 import java.util.List;
 

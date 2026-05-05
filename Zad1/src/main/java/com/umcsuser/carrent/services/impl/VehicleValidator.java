@@ -1,4 +1,4 @@
-package com.umcsuser.carrent.services;
+package com.umcsuser.carrent.services.impl;
 
 import com.umcsuser.carrent.models.Vehicle;
 import com.umcsuser.carrent.models.VehicleCategoryConfig;
