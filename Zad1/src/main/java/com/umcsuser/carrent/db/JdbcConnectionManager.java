@@ -5,35 +5,30 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class JdbcConnectionManager {
-    private static JdbcConnectionManager instance;
 
-    private JdbcConnectionManager() {
+    private final String url;
+
+    private static class InstanceHolder {
+        private static final JdbcConnectionManager INSTANCE = new JdbcConnectionManager();
     }
 
     public static JdbcConnectionManager getInstance() {
-        if (instance == null) {
-            instance = new JdbcConnectionManager();
+        return InstanceHolder.INSTANCE;
+    }
+
+    private JdbcConnectionManager() {
+        url = System.getenv("DB_URL");
+
+        if (url == null || url.trim().isEmpty()) {
+            throw new IllegalStateException("Zmienna środowiskowa DB_URL nie jest ustawiona.");
         }
-        return instance;
     }
 
     public Connection getConnection() {
         try {
-            for (int i = 0; i < 3; i++) {
-                try {
-                    return DriverManager.getConnection(
-                            "jdbc:postgresql://ep-sweet-pond-al4245wa.c-3.eu-central-1.aws.neon.tech/neondb?sslmode=require",
-                            "neondb_owner",
-                            "npg_8qam4FyhTQdb"
-                    );
-                } catch (SQLException e) {
-                    System.out.println("Retry " + (i + 1));
-                    Thread.sleep(1000);
-                }
-            }
-            throw new RuntimeException("DB connection failed after retries");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            return DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            throw new RuntimeException("Nie udało się nawiązać połączenia z bazą danych.", e);
         }
     }
 }

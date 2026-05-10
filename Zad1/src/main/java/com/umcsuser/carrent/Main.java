@@ -7,22 +7,22 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println(BCrypt.hashpw("admin123", BCrypt.gensalt()));
         UserRepository userRepository;
         VehicleRepository vehicleRepository;
         RentalRepository rentalRepository;
+
 
         VehicleCategoryRepository categoryRepository = new VehicleCategoryConfigJsonRepository();
 
         boolean useJdbc = args.length > 0 && args[0].equalsIgnoreCase("jdbc");
 
         if (useJdbc) {
-            System.out.println("[SYSTEM] Uruchamianie w trybie BAZY DANYCH (JDBC)");
+            System.out.println("JDBC");
             userRepository = new UserJdbcRepository();
             vehicleRepository = new VehicleJdbcRepository();
             rentalRepository = new RentalJdbcRepository();
         } else {
-            System.out.println("[SYSTEM] Uruchamianie w trybie PLIKÓW (JSON)");
+            System.out.println("JSON");
             userRepository = new UserJsonRepository();
             vehicleRepository = new VehicleJsonRepository();
             rentalRepository = new RentalJsonRepository();
