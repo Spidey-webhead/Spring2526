@@ -8,9 +8,10 @@ import com.umcsuser.carrent.repositories.impl.RentalHibernateRepository;
 import com.umcsuser.carrent.repositories.impl.VehicleHibernateRepository;
 import com.umcsuser.carrent.services.VehicleServiceInterface;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.Transaction;import org.springframework.context.annotation.Profile;import org.springframework.stereotype.Service;
 import java.util.List;
-
+@Service
+@Profile("hibernate")
 public class VehicleHibernateService implements VehicleServiceInterface {
     private final VehicleHibernateRepository vehicleRepo;
     private final RentalHibernateRepository rentalRepo;

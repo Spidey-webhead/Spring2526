@@ -6,11 +6,14 @@ import com.umcsuser.carrent.models.Vehicle;
 import com.umcsuser.carrent.repositories.RentalRepository;
 import com.umcsuser.carrent.repositories.UserRepository;
 import com.umcsuser.carrent.repositories.VehicleRepository;
-import com.umcsuser.carrent.services.RentalServiceInterface;
+import com.umcsuser.carrent.services.RentalServiceInterface;import jakarta.transaction.Transactional;import org.springframework.context.annotation.Profile;import org.springframework.stereotype.Repository;import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+@Service
+@Profile("jdbc")
+@Transactional
 
 public class OldRentalService implements RentalServiceInterface {
     private final RentalRepository rentalRepository;

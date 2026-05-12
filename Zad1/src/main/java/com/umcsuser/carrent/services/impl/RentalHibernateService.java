@@ -9,13 +9,14 @@ import com.umcsuser.carrent.repositories.impl.UserHibernateRepository;
 import com.umcsuser.carrent.repositories.impl.VehicleHibernateRepository;
 import com.umcsuser.carrent.services.RentalServiceInterface;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.Transaction;import org.springframework.context.annotation.Profile;import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
+@Service
+@Profile("hibernate")
 public class RentalHibernateService implements RentalServiceInterface {
     private final RentalHibernateRepository rentalRepo;
     private final VehicleHibernateRepository vehicleRepo;

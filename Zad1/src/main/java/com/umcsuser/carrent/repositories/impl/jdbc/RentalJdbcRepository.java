@@ -1,9 +1,12 @@
-package com.umcsuser.carrent.repositories.impl;
+package com.umcsuser.carrent.repositories.impl.jdbc;
 
 import com.umcsuser.carrent.db.JdbcConnectionManager;
 import com.umcsuser.carrent.models.Rental;
 import com.umcsuser.carrent.models.User;import com.umcsuser.carrent.models.Vehicle;import com.umcsuser.carrent.repositories.RentalRepository;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,14 +15,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
+@Repository
+@Profile("jdbc")
 public class RentalJdbcRepository implements RentalRepository {
+    private final DataSource dataSource;
 
+    public RentalJdbcRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
     @Override
     public List<Rental> findAll() {
         List<Rental> rentals = new ArrayList<>();
         String sql = "SELECT id, vehicle_id, user_id, rent_date, return_date FROM rental";
-        try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {

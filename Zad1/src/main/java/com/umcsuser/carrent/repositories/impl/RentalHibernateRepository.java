@@ -4,11 +4,12 @@ package com.umcsuser.carrent.repositories.impl;
 import com.umcsuser.carrent.models.Rental;
 import com.umcsuser.carrent.repositories.RentalRepository;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
+import org.hibernate.query.Query;import org.springframework.context.annotation.Profile;import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-
+@Repository
+@Profile("hibernate")
 public class RentalHibernateRepository implements RentalRepository {
 
     private Session session;

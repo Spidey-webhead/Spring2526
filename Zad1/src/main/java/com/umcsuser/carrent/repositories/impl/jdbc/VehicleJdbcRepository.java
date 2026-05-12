@@ -1,29 +1,37 @@
-package com.umcsuser.carrent.repositories.impl;
+package com.umcsuser.carrent.repositories.impl.jdbc;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.umcsuser.carrent.db.JdbcConnectionManager;
 import com.umcsuser.carrent.models.Vehicle;
 import com.umcsuser.carrent.repositories.VehicleRepository;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-
+@Repository
+@Profile("jdbc")
 public class VehicleJdbcRepository implements VehicleRepository {
-
+    private final DataSource dataSource;
     private final Gson gson = new Gson();
     private final Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
+
+    public VehicleJdbcRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     public List<Vehicle> findAll() {
         List<Vehicle> vehicles = new ArrayList<>();
         String sql = "SELECT id, category, brand, model, year_manuf, plate, price, attributes FROM vehicle";
 
-        try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 

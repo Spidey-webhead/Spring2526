@@ -1,10 +1,13 @@
-package com.umcsuser.carrent.repositories.impl;
+package com.umcsuser.carrent.repositories.impl.jdbc;
 
 import com.umcsuser.carrent.db.JdbcConnectionManager;
 import com.umcsuser.carrent.models.Role;
 import com.umcsuser.carrent.models.User;
 import com.umcsuser.carrent.repositories.UserRepository;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,15 +16,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
+@Repository
+@Profile("jdbc")
 public class UserJdbcRepository implements UserRepository {
+    private final DataSource dataSource;
+
+    public UserJdbcRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT id, login, password_hash, role FROM users";
 
-        try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 

@@ -1,10 +1,10 @@
 package com.umcsuser.carrent.services.impl;
 
 import com.umcsuser.carrent.models.Vehicle;
-import com.umcsuser.carrent.models.VehicleCategoryConfig;
+import com.umcsuser.carrent.models.VehicleCategoryConfig;import org.springframework.stereotype.Component;
 
 import java.util.Map;
-
+@Component
 public class VehicleValidator {
 
     private final VehicleCategoryService configService;

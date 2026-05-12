@@ -3,10 +3,12 @@ package com.umcsuser.carrent.services.impl;
 import com.umcsuser.carrent.models.Vehicle;
 import com.umcsuser.carrent.repositories.RentalRepository;
 import com.umcsuser.carrent.repositories.VehicleRepository;
-import com.umcsuser.carrent.services.VehicleServiceInterface;
+import com.umcsuser.carrent.services.VehicleServiceInterface;import jakarta.transaction.Transactional;import org.springframework.context.annotation.Profile;import org.springframework.stereotype.Repository;import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
+@Profile("jdbc")
+@Transactional
 public class OldVehicleService implements VehicleServiceInterface {
     private final VehicleValidator vehicleValidator;
     private final VehicleRepository vehicleRepository;
@@ -30,7 +32,8 @@ public class OldVehicleService implements VehicleServiceInterface {
     public boolean isVehicleRented(String id) {
         return isVehicleCurrentRented(id);
     }
-
+    @Override
+    @Transactional
     public List<Vehicle> findAvailableVehicles() {
         return vehicleRepository.findAll().stream()
                 .filter(vehicle -> !isVehicleCurrentRented(vehicle.getId()))

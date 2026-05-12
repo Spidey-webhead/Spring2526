@@ -6,9 +6,10 @@ import com.umcsuser.carrent.repositories.impl.RentalHibernateRepository;
 import com.umcsuser.carrent.repositories.impl.UserHibernateRepository;
 import com.umcsuser.carrent.services.UserServiceInterface;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.Transaction;import org.springframework.context.annotation.Profile;import org.springframework.stereotype.Repository;
 import java.util.List;
-
+@Repository
+@Profile("hibernate")
 public class UserHibernateService implements UserServiceInterface {
     private final UserHibernateRepository userRepo;
     private final RentalHibernateRepository rentalRepo;
