@@ -3,14 +3,15 @@ package com.umcsuser.carrent.services.impl;
 import com.umcsuser.carrent.models.Role;
 import com.umcsuser.carrent.models.User;
 import com.umcsuser.carrent.repositories.UserRepository;
+import com.umcsuser.carrent.services.AuthServiceInterface;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Optional;
 
-public class AuthService {
+public class OldAuthService implements AuthServiceInterface {
     private final UserRepository userRepo;
 
-    public AuthService(UserRepository userRepo) {
+    public OldAuthService(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
 

@@ -1,6 +1,10 @@
 package com.umcsuser.carrent;
 
 import com.umcsuser.carrent.models.*;
+import com.umcsuser.carrent.services.AuthServiceInterface;
+import com.umcsuser.carrent.services.RentalServiceInterface;
+import com.umcsuser.carrent.services.UserServiceInterface;
+import com.umcsuser.carrent.services.VehicleServiceInterface;
 import com.umcsuser.carrent.services.impl.*;
 
 import java.util.List;
@@ -9,20 +13,23 @@ import java.util.Scanner;
 
 public class UI {
 
-    private final AuthService authService;
-    private final VehicleService vehicleService;
-    private final RentalService rentalService;
-    private final UserService userService;
+    private final AuthServiceInterface authService;
+    private final VehicleServiceInterface vehicleService;
+    private final RentalServiceInterface rentalService;
+    private final UserServiceInterface userService;
     private final VehicleCategoryService categoryConfigService;
     private final Scanner scanner = new Scanner(System.in);
 
-    public UI(AuthService authService, VehicleService vehicleService, RentalService rentalService,
-              UserService userService, VehicleCategoryService categoryConfigService) {
+    public UI(AuthServiceInterface authService,
+              VehicleServiceInterface vehicleService,
+              RentalServiceInterface rentalService,
+              UserServiceInterface userService,
+              VehicleCategoryService categoryService) {
         this.authService = authService;
         this.vehicleService = vehicleService;
         this.rentalService = rentalService;
         this.userService = userService;
-        this.categoryConfigService = categoryConfigService;
+        this.categoryConfigService = categoryService;
     }
 
     public void start() {
@@ -36,40 +43,38 @@ public class UI {
                         if (loggedUser.getRole() == Role.ADMIN) adminMenu(loggedUser);
                         else userMenu(loggedUser);
                     } else {
-                        System.out.println("Nieprawidłowy login lub hasło.");
+                        System.out.println("Nieprawidlowy login lub haslo.");
                     }
                 }
                 case "2" -> register();
                 case "0" -> { return; }
-                default -> System.out.println("Nieprawidłowa opcja.");
+                default -> System.out.println("Nieprawidlowa opcja.");
             }
         }
     }
 
     private void register() {
         System.out.println("=== Rejestracja ===");
-        if (authService.register(readText("Podaj login: "), readText("Podaj hasło: "))) {
-            System.out.println("Zarejestrowano pomyślnie.");
+        if (authService.register(readText("Podaj login: "), readText("Podaj haslo: "))) {
+            System.out.println("Zarejestrowano pomyslnie.");
         } else {
-            System.out.println("Błąd rejestracji. Użytkownik prawdopodobnie już istnieje.");
+            System.out.println("Blad rejestracji. Uzytkownik prawdopodobnie juz istnieje.");
         }
     }
 
     private User login() {
         System.out.println("=== Logowanie ===");
-        return authService.login(readText("Login: "), readText("Hasło: ")).orElse(null);
+        return authService.login(readText("Login: "), readText("Haslo: ")).orElse(null);
     }
 
     private void adminMenu(User loggedUser) {
         while (true) {
             System.out.println("\n=== MENU ADMINA ===");
-            System.out.println("1. Pokaż pojazdy | 2. Dodaj pojazd | 3. Usuń pojazd | 4. Pokaż użytkowników | 5. Usuń użytkownika | 6. Moje dane | 7. Historia wypożyczeń | 0. Wyloguj");
+            System.out.println("1. Pokaz pojazdy | 2. Dodaj pojazd | 3. Usun pojazd | 4. Pokaz uzytkownikow | 5. Usun uzytkownika | 6. Moje dane | 7. Historia wypozyczen | 0. Wyloguj");
 
             switch (scanner.nextLine().trim()) {
                 case "1" -> vehicleService.findAllVehicles().forEach(v ->
-                        System.out.println(v +
-                                " [Wypożyczony: " + vehicleService.isVehicleRented(v.getId()) + "]"
-                                + "[Wypożyczony: " +rentalService.vehicleHasActiveRental(v.getId()) + "]"));
+                        System.out.println(v + " [Wypozyczony: " + rentalService.vehicleHasActiveRental(v.getId()) + "]"));
                 case "2" -> addVehicle();
                 case "3" -> deleteVehicle();
                 case "4" -> showAllUsers();
@@ -77,7 +82,7 @@ public class UI {
                 case "6" -> showCurrentUserData(loggedUser);
                 case "7" -> showRentalHistory();
                 case "0" -> { return; }
-                default -> System.out.println("Nieprawidłowa opcja.");
+                default -> System.out.println("Nieprawidlowa opcja.");
             }
         }
     }
@@ -85,7 +90,7 @@ public class UI {
     private void userMenu(User loggedUser) {
         while (true) {
             System.out.println("\n=== MENU USERA ===");
-            System.out.println("1. Dostępne pojazdy | 2. Wypożycz | 3. Zwróć | 4. Moje dane | 5. Moja historia | 0. Wyloguj");
+            System.out.println("1. Dostepne pojazdy | 2. Wypozycz | 3. Zwroc | 4. Moje dane | 5. Moja historia | 0. Wyloguj");
 
             switch (scanner.nextLine().trim()) {
                 case "1" -> vehicleService.findAvailableVehicles().forEach(System.out::println);
@@ -94,11 +99,11 @@ public class UI {
                 case "4" -> showCurrentUserData(loggedUser);
                 case "5" -> {
                     List<Rental> rentals = rentalService.findUserRentals(loggedUser.getId());
-                    if (rentals.isEmpty()) System.out.println("Brak historii wypożyczeń.");
+                    if (rentals.isEmpty()) System.out.println("Brak historii wypozyczen.");
                     else rentals.forEach(this::printRentalDetails);
                 }
                 case "0" -> { return; }
-                default -> System.out.println("Nieprawidłowa opcja.");
+                default -> System.out.println("Nieprawidlowa opcja.");
             }
         }
     }
@@ -107,15 +112,15 @@ public class UI {
         System.out.println("=== Dodawanie pojazdu ===");
         List<VehicleCategoryConfig> categories = categoryConfigService.findAllCategories();
         if (categories.isEmpty()) {
-            System.out.println("Brak skonfigurowanych kategorii pojazdów.");
+            System.out.println("Brak skonfigurowanych kategorii pojazdow.");
             return;
         }
 
-        System.out.println("Dostępne kategorie:");
+        System.out.println("Dostepne kategorie:");
         categories.forEach(c -> System.out.println("- " + c.getCategory()));
 
         try {
-            VehicleCategoryConfig config = categoryConfigService.getByCategory(readText("Podaj kategorię: "));
+            VehicleCategoryConfig config = categoryConfigService.getByCategory(readText("Podaj kategorie: "));
             Vehicle vehicle = Vehicle.builder()
                     .category(config.getCategory())
                     .brand(readText("Marka: "))
@@ -131,32 +136,32 @@ public class UI {
 
             System.out.println("Dodano pojazd o ID: " + vehicleService.addVehicle(vehicle).getId());
         } catch (Exception e) {
-            System.out.println("Błąd: " + e.getMessage());
+            System.out.println("Blad: " + e.getMessage());
         }
     }
 
     private void deleteVehicle() {
         try {
-            vehicleService.removeVehicle(readText("ID pojazdu do usunięcia: "));
-            System.out.println("Usunięto pomyślnie.");
+            vehicleService.removeVehicle(readText("ID pojazdu do usuniecia: "));
+            System.out.println("Usunieto pomyslnie.");
         } catch (Exception e) {
-            System.out.println("Błąd: " + e.getMessage());
+            System.out.println("Blad: " + e.getMessage());
         }
     }
 
     private void deleteUser(User loggedUser) {
         try {
-            userService.deleteUser(readText("ID usera do usunięcia: "));
-            System.out.println("Usunięto pomyślnie.");
+            userService.deleteUser(readText("ID usera do usuniecia: "), loggedUser.getId());
+            System.out.println("Usunieto pomyslnie.");
         } catch (Exception e) {
-            System.out.println("Błąd: " + e.getMessage());
+            System.out.println("Blad: " + e.getMessage());
         }
     }
 
     private void showAllUsers() {
         List<User> users = userService.findAllUsers();
         if (users.isEmpty()) {
-            System.out.println("Brak użytkowników.");
+            System.out.println("Brak uzytkownikow.");
             return;
         }
 
@@ -165,9 +170,9 @@ public class UI {
             List<Rental> rentals = rentalService.findUserRentals(user.getId());
 
             if (rentals.isEmpty()) {
-                System.out.println("  Historia wypożyczeń: brak\n--------------------");
+                System.out.println("  Historia wypozyczen: brak\n--------------------");
             } else {
-                System.out.println("  Historia wypożyczeń:");
+                System.out.println("  Historia wypozyczen:");
                 rentals.forEach(this::printRentalDetails);
             }
         });
@@ -175,19 +180,19 @@ public class UI {
 
     private void rentVehicle(User loggedUser) {
         try {
-            rentalService.rentVehicle(loggedUser.getId(), readText("ID pojazdu do wypożyczenia: "));
-            System.out.println("Pojazd został wypożyczony.");
+            rentalService.rentVehicle(loggedUser.getId(), readText("ID pojazdu do wypozyczenia: "));
+            System.out.println("Pojazd zostal wypozyczony.");
         } catch (Exception e) {
-            System.out.println("Błąd: " + e.getMessage());
+            System.out.println("Blad: " + e.getMessage());
         }
     }
 
     private void returnVehicle(User loggedUser) {
         try {
             rentalService.returnVehicle(loggedUser.getId());
-            System.out.println("Pojazd został zwrócony.");
+            System.out.println("Pojazd zostal zwrocony.");
         } catch (Exception e) {
-            System.out.println("Błąd: " + e.getMessage());
+            System.out.println("Blad: " + e.getMessage());
         }
     }
 
@@ -200,22 +205,22 @@ public class UI {
                     .ifPresentOrElse(
                             rental -> {
                                 try {
-                                    System.out.println("Aktualnie wypożyczony pojazd: " + vehicleService.findById(rental.getVehicleId()));
+                                    System.out.println("Aktualnie wypozyczony pojazd: " + vehicleService.findById(rental.getVehicleId()));
                                 } catch (Exception e) {
-                                    System.out.println("Aktualnie wypożyczony pojazd: " + rental.getVehicleId() + " (brak szczegółów)");
+                                    System.out.println("Aktualnie wypozyczony pojazd: " + rental.getVehicleId() + " (brak szczegolow)");
                                 }
                             },
-                            () -> System.out.println("Brak aktywnego wypożyczenia.")
+                            () -> System.out.println("Brak aktywnego wypozyczenia.")
                     );
         } catch (Exception e) {
-            System.out.println("Nie udało się odczytać danych użytkownika.");
+            System.out.println("Nie udalo sie odczytac danych uzytkownika.");
         }
     }
 
     private void showRentalHistory() {
         List<Rental> rentals = rentalService.findAllRentals();
         if (rentals.isEmpty()) {
-            System.out.println("Brak historii wypożyczeń.");
+            System.out.println("Brak historii wypozyczen.");
             return;
         }
         rentals.forEach(this::printRentalDetails);
@@ -226,7 +231,7 @@ public class UI {
             System.out.print(prompt);
             String input = scanner.nextLine().trim();
             if (!input.isEmpty()) return input;
-            System.out.println("To pole nie może być puste!");
+            System.out.println("To pole nie moze byc puste!");
         }
     }
 
@@ -235,7 +240,7 @@ public class UI {
             try {
                 return Integer.parseInt(readText(prompt));
             } catch (NumberFormatException e) {
-                System.out.println("Wpisz poprawną liczbę całkowitą!");
+                System.out.println("Wpisz poprawna liczbe calkowita!");
             }
         }
     }
@@ -245,9 +250,9 @@ public class UI {
             try {
                 double val = Double.parseDouble(readText(prompt));
                 if (val >= 0) return val;
-                System.out.println("Wartość nie może być ujemna!");
+                System.out.println("Wartosc nie moze byc ujemna!");
             } catch (NumberFormatException e) {
-                System.out.println("Wpisz poprawną liczbę!");
+                System.out.println("Wpisz poprawna liczbe!");
             }
         }
     }

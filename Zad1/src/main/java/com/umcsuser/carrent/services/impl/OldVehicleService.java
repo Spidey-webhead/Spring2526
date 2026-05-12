@@ -3,15 +3,16 @@ package com.umcsuser.carrent.services.impl;
 import com.umcsuser.carrent.models.Vehicle;
 import com.umcsuser.carrent.repositories.RentalRepository;
 import com.umcsuser.carrent.repositories.VehicleRepository;
+import com.umcsuser.carrent.services.VehicleServiceInterface;
 
 import java.util.List;
 
-public class VehicleService {
+public class OldVehicleService implements VehicleServiceInterface {
     private final VehicleValidator vehicleValidator;
     private final VehicleRepository vehicleRepository;
     private final RentalRepository rentalRepository;
 
-    public VehicleService(VehicleValidator vehicleValidator, VehicleRepository vehicleRepository, RentalRepository rentalRepository) {
+    public OldVehicleService(VehicleValidator vehicleValidator, VehicleRepository vehicleRepository, RentalRepository rentalRepository) {
         this.vehicleValidator = vehicleValidator;
         this.vehicleRepository = vehicleRepository;
         this.rentalRepository = rentalRepository;
@@ -26,7 +27,7 @@ public class VehicleService {
         return vehicleRepository.findAll();
     }
 
-    public Object isVehicleRented(String id) {
+    public boolean isVehicleRented(String id) {
         return isVehicleCurrentRented(id);
     }
 
