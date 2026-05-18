@@ -1,7 +1,5 @@
 package com.umcsuser.carrent.services.impl;
 
-import com.umcsuser.carrent.models.Vehicle;
-import com.umcsuser.carrent.services.VehicleServiceInterface;
 import com.umcsuser.carrent.db.HibernateConfiguration;
 import com.umcsuser.carrent.models.Vehicle;
 import com.umcsuser.carrent.repositories.impl.RentalHibernateRepository;
@@ -54,11 +52,14 @@ public class VehicleHibernateService implements VehicleServiceInterface {
         try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
             vehicleRepo.setSession(session);
+            if (vehicle.getId() == null || vehicle.getId().isEmpty()) {
+                vehicle.setId(java.util.UUID.randomUUID().toString());
+            }
             Vehicle saved = vehicleRepo.save(vehicle);
             tx.commit();
             return saved;
         } catch (RuntimeException e) {
-            if (tx != null) tx.rollback();
+            if (tx != null && tx.isActive()) tx.rollback();
             throw e;
         }
     }
@@ -78,7 +79,7 @@ public class VehicleHibernateService implements VehicleServiceInterface {
             vehicleRepo.deleteById(vehicleId);
             tx.commit();
         } catch (RuntimeException e) {
-            if (tx != null) tx.rollback();
+            if (tx != null && tx.isActive()) tx.rollback();
             throw e;
         }
     }

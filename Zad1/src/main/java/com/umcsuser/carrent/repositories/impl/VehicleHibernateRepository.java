@@ -2,18 +2,16 @@ package com.umcsuser.carrent.repositories.impl;
 
 import com.umcsuser.carrent.models.Vehicle;
 import com.umcsuser.carrent.repositories.VehicleRepository;
+import lombok.Setter;
 import org.hibernate.Session;
 
 import java.util.List;
 import java.util.Optional;
 
+@Setter
 public class VehicleHibernateRepository implements VehicleRepository {
 
     private Session session;
-
-    public void setSession(Session session) {
-        this.session = session;
-    }
 
     @Override
     public Vehicle save(Vehicle vehicle) {

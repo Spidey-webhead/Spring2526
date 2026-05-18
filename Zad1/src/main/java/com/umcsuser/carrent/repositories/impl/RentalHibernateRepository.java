@@ -1,21 +1,18 @@
 package com.umcsuser.carrent.repositories.impl;
 
-
 import com.umcsuser.carrent.models.Rental;
 import com.umcsuser.carrent.repositories.RentalRepository;
+import lombok.Setter;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.util.List;
 import java.util.Optional;
 
+@Setter
 public class RentalHibernateRepository implements RentalRepository {
 
     private Session session;
-
-    public void setSession(Session session) {
-        this.session = session;
-    }
 
     @Override
     public Rental save(Rental rental) {

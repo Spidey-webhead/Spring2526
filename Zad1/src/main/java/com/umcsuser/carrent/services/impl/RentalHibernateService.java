@@ -26,6 +26,7 @@ public class RentalHibernateService implements RentalServiceInterface {
         this.vehicleRepo = vehicleRepo;
         this.userRepo = userRepo;
     }
+
     private void setSession(Session session) {
         rentalRepo.setSession(session);
         vehicleRepo.setSession(session);
@@ -39,7 +40,7 @@ public class RentalHibernateService implements RentalServiceInterface {
             tx = session.beginTransaction();
             setSession(session);
 
-            if (userHasActiveRental(userId)) {
+            if (rentalRepo.findByUserIdAndReturnDateIsNull(userId).isPresent()) {
                 throw new IllegalStateException("Użytkownik ma już aktywne wypożyczenie.");
             }
 
@@ -48,7 +49,7 @@ public class RentalHibernateService implements RentalServiceInterface {
             User user = userRepo.findById(userId)
                     .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika."));
 
-            if (vehicleHasActiveRental(vehicleId)) {
+            if (rentalRepo.findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent()) {
                 throw new IllegalStateException("Pojazd jest już wypożyczony.");
             }
 
@@ -63,7 +64,7 @@ public class RentalHibernateService implements RentalServiceInterface {
             tx.commit();
             return saved;
         } catch (RuntimeException e) {
-            if (tx != null) tx.rollback();
+            if (tx != null && tx.isActive()) tx.rollback();
             throw e;
         }
     }
@@ -83,7 +84,7 @@ public class RentalHibernateService implements RentalServiceInterface {
             tx.commit();
             return saved;
         } catch (RuntimeException e) {
-            if (tx != null) tx.rollback();
+            if (tx != null && tx.isActive()) tx.rollback();
             throw e;
         }
     }

@@ -37,6 +37,10 @@ public class UserHibernateService implements UserServiceInterface {
 
     @Override
     public void deleteUser(String id, String loggedUserId) {
+        if (id.equals(loggedUserId)) {
+            throw new IllegalArgumentException("Nie możesz usunąć samego siebie!");
+        }
+
         Transaction tx = null;
         try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
@@ -50,7 +54,7 @@ public class UserHibernateService implements UserServiceInterface {
             userRepo.deleteById(id);
             tx.commit();
         } catch (RuntimeException e) {
-            if (tx != null) tx.rollback();
+            if (tx != null && tx.isActive()) tx.rollback();
             throw e;
         }
     }
