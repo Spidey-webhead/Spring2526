@@ -2,9 +2,6 @@ package com.umcsuser.carrent.services;
 
 
 import com.umcsuser.carrent.models.Rental;
-import com.umcsuser.carrent.repositories.impl.RentalHibernateRepository;
-import com.umcsuser.carrent.repositories.impl.UserHibernateRepository;
-import com.umcsuser.carrent.repositories.impl.VehicleHibernateRepository;
 
 import java.util.List;
 import java.util.Optional;

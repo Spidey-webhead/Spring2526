@@ -1,4 +1,4 @@
-package com.umcsuser.carrent.repositories.impl;
+package com.umcsuser.carrent.repositories.impl.hibernate;
 
 
 import com.umcsuser.carrent.models.User;
@@ -14,10 +14,10 @@ import java.util.Optional;
 @Profile("hibernate")
 public class UserHibernateRepository implements UserRepository {
 
-   private Session session;
-   public void setSession(Session session) {
+    private Session session;
+    public void setSession(Session session) {
         this.session = session;
-   }
+    }
 
     @Override
     public List<User> findAll() {

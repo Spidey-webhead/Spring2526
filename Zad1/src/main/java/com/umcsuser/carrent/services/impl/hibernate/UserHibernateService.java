@@ -1,9 +1,9 @@
-package com.umcsuser.carrent.services.impl;
+package com.umcsuser.carrent.services.impl.hibernate;
 
 import com.umcsuser.carrent.db.HibernateConfiguration;
 import com.umcsuser.carrent.models.User;
-import com.umcsuser.carrent.repositories.impl.RentalHibernateRepository;
-import com.umcsuser.carrent.repositories.impl.UserHibernateRepository;
+import com.umcsuser.carrent.repositories.impl.hibernate.RentalHibernateRepository;
+import com.umcsuser.carrent.repositories.impl.hibernate.UserHibernateRepository;
 import com.umcsuser.carrent.services.UserServiceInterface;
 import org.hibernate.Session;
 import org.hibernate.Transaction;import org.springframework.context.annotation.Profile;import org.springframework.stereotype.Repository;

@@ -1,6 +1,7 @@
 package com.umcsuser.carrent.repositories.impl.jpa;
 
 import com.umcsuser.carrent.models.User;
+import com.umcsuser.carrent.repositories.UserJpaRepository;
 import com.umcsuser.carrent.repositories.UserRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
@@ -9,7 +10,13 @@ import java.util.List;
 import java.util.Optional;
 @Repository
 @Profile("jpa")
-public class UserJpaRepository implements UserRepository {
+public class UserJpaRepositoryAdapter implements UserRepository {
+    private final UserJpaRepository delegate;
+
+    public UserJpaRepositoryAdapter(UserJpaRepository delegate) {
+        this.delegate = delegate;
+    }
+
     @Override
     public List<User> findAll() {
         return List.of();

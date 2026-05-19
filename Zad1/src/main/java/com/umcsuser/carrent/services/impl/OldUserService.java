@@ -5,10 +5,11 @@ import com.umcsuser.carrent.repositories.RentalRepository;
 import com.umcsuser.carrent.repositories.UserRepository;
 import com.umcsuser.carrent.services.RentalServiceInterface;
 import com.umcsuser.carrent.services.UserServiceInterface;import org.springframework.context.annotation.Profile;import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-@Repository
-@Profile("jdbc")
+@Service
+@Profile({"json", "jdbc"})
 public class OldUserService implements UserServiceInterface {
     private final UserRepository userRepository;
     private final RentalRepository rentalRepository;

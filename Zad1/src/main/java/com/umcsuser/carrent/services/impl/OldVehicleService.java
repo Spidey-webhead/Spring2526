@@ -7,7 +7,7 @@ import com.umcsuser.carrent.services.VehicleServiceInterface;import jakarta.tran
 
 import java.util.List;
 @Service
-@Profile("jdbc")
+@Profile({"json", "jdbc"})
 @Transactional
 public class OldVehicleService implements VehicleServiceInterface {
     private final VehicleValidator vehicleValidator;

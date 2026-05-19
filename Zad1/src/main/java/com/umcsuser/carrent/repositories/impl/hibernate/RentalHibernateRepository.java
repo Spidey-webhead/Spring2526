@@ -1,4 +1,4 @@
-package com.umcsuser.carrent.repositories.impl;
+package com.umcsuser.carrent.repositories.impl.hibernate;
 
 
 import com.umcsuser.carrent.models.Rental;

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 @Service
-@Profile("jdbc")
+@Profile({"json", "jdbc"})
 @Transactional
 
 public class OldRentalService implements RentalServiceInterface {

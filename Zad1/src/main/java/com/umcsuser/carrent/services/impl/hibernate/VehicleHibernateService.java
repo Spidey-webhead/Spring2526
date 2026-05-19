@@ -1,12 +1,10 @@
-package com.umcsuser.carrent.services.impl;
+package com.umcsuser.carrent.services.impl.hibernate;
 
 import com.umcsuser.carrent.models.Vehicle;
 import com.umcsuser.carrent.services.VehicleServiceInterface;
 import com.umcsuser.carrent.db.HibernateConfiguration;
-import com.umcsuser.carrent.models.Vehicle;
-import com.umcsuser.carrent.repositories.impl.RentalHibernateRepository;
-import com.umcsuser.carrent.repositories.impl.VehicleHibernateRepository;
-import com.umcsuser.carrent.services.VehicleServiceInterface;
+import com.umcsuser.carrent.repositories.impl.hibernate.RentalHibernateRepository;
+import com.umcsuser.carrent.repositories.impl.hibernate.VehicleHibernateRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;import org.springframework.context.annotation.Profile;import org.springframework.stereotype.Service;
 import java.util.List;
