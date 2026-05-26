@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 @Repository
-@Profile("json")
 public class VehicleJsonRepository implements VehicleRepository {
     private final JsonFileStorage<Vehicle> storage = new JsonFileStorage<>("vehicles.json",
             new TypeToken<List<Vehicle>>() {}.getType());

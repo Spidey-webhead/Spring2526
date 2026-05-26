@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;import org.springframework.boo
 @SpringBootApplication
 public class CarRentApplication {
     public static void main(String[] args) {
-    SpringApplication.run(CarRentApplication.class, args);
-
+        SpringApplication app = new SpringApplication(CarRentApplication.class);
+        app.run(args);
     }
 }

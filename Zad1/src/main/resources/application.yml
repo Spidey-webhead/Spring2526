@@ -1,15 +1,27 @@
 spring:
  profiles:
-  active: ${APP_PROFILE:json}
+  active: ${APP_PROFILE:jpa}
  main:
   banner-mode: off
+  lazy-initialization: true
+ datasource:
+  url: ${DB_URL:jdbc:postgresql://ep-sweet-pond-al4245wa-pooler.c-3.eu-central-1.aws.neon.tech/neondb?sslmode=require}
+  username: ${DB_USERNAME:neondb_owner}
+  password: ${DB_PASSWORD:npg_pgexINhv7wS9}
+  driver-class-name: org.postgresql.Driver
+ jpa:
+  hibernate:
+   ddl-auto: update
+  properties:
+   hibernate:
+    dialect: org.hibernate.dialect.PostgreSQLDialect
 
 server:
-port: ${PORT:8080}
+ port: ${PORT:8080}
 
 carrent:
  json:
-  users-file: user.json
+  users-file: users.json
   vechiles-file: vehicles.json
   rentals-file: rentals.json
   categories-file: categories.json
