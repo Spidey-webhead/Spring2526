@@ -4,6 +4,7 @@ import com.umcsuser.carrent.db.JdbcConnectionManager;
 import com.umcsuser.carrent.models.Rental;
 import com.umcsuser.carrent.models.User;import com.umcsuser.carrent.models.Vehicle;import com.umcsuser.carrent.repositories.RentalRepository;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -27,7 +28,8 @@ public class RentalJdbcRepository implements RentalRepository {
     public List<Rental> findAll() {
         List<Rental> rentals = new ArrayList<>();
         String sql = "SELECT id, vehicle_id, user_id, rent_date, return_date FROM rental";
-        try (Connection connection = dataSource.getConnection();
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (
              PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
@@ -35,6 +37,8 @@ public class RentalJdbcRepository implements RentalRepository {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Błąd podczas odczytu wypożyczeń", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
         return rentals;
     }
@@ -51,7 +55,9 @@ public class RentalJdbcRepository implements RentalRepository {
                 "ON CONFLICT (id) DO UPDATE SET " +
                 "return_date = EXCLUDED.return_date";
 
-        try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+
+        try (
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, toSave.getId());
             stmt.setString(2, toSave.getVehicleId());
@@ -61,6 +67,8 @@ public class RentalJdbcRepository implements RentalRepository {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Błąd podczas zapisywania wypożyczenia", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
         return toSave;
     }
@@ -86,17 +94,21 @@ public class RentalJdbcRepository implements RentalRepository {
     @Override
     public void deleteById(String id) {
         String sql = "DELETE FROM rental WHERE id = ?";
-        try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Błąd podczas usuwania wypożyczenia", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 
     private Optional<Rental> findSingle(String sql, String param) {
-        try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, param);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -104,6 +116,8 @@ public class RentalJdbcRepository implements RentalRepository {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Błąd bazy danych", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
         return Optional.empty();
     }

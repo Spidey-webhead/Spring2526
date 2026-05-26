@@ -3,6 +3,8 @@ package com.umcsuser.carrent.repositories.impl.hibernate;
 
 import com.umcsuser.carrent.models.User;
 import com.umcsuser.carrent.repositories.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.context.annotation.Profile;
@@ -14,36 +16,34 @@ import java.util.Optional;
 @Profile("hibernate")
 public class UserHibernateRepository implements UserRepository {
 
-    private Session session;
-    public void setSession(Session session) {
-        this.session = session;
-    }
+   @PersistenceContext
+   private EntityManager entityManager;
 
     @Override
     public List<User> findAll() {
-        return session.createQuery("FROM User", User.class).list();    }
+        return entityManager.createQuery("FROM User", User.class).getResultList();    }
 
     @Override
     public Optional<User> findById(String id) {
-        return Optional.ofNullable(session.get(User.class, id));    }
+        return Optional.ofNullable(entityManager.find(User.class, id));    }
 
     @Override
     public Optional<User> findByLogin(String login) {
-        Query<User> query = session.createQuery("FROM User u WHERE u.login = :login", User.class);
+        Query<User> query = (Query<User>) entityManager.createQuery("FROM User u WHERE u.login = :login", User.class);
         query.setParameter("login", login);
         return query.uniqueResultOptional();
     }
 
     @Override
     public User save(User user) {
-        return session.merge(user);
+        return entityManager.merge(user);
     }
 
     @Override
     public void deleteById(String id) {
-        User user = session.get(User.class, id);
+        User user = entityManager.find(User.class, id);
         if (user != null) {
-            session.remove(user);
+            entityManager.remove(user);
         }
     }
 }

@@ -5,9 +5,11 @@ import com.umcsuser.carrent.models.Role;
 import com.umcsuser.carrent.models.User;
 import com.umcsuser.carrent.repositories.UserRepository;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,8 +31,8 @@ public class UserJdbcRepository implements UserRepository {
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT id, login, password_hash, role FROM users";
-
-        try (Connection connection = dataSource.getConnection();
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (
              PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
@@ -39,6 +41,8 @@ public class UserJdbcRepository implements UserRepository {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Blad podczas pobierania wszystkich uzytkownikow", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
         return users;
     }
@@ -46,8 +50,8 @@ public class UserJdbcRepository implements UserRepository {
     @Override
     public Optional<User> findById(String id) {
         String sql = "SELECT id, login, password_hash, role FROM users WHERE id = ?";
-
-        try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
+        Connection connection = JdbcConnectionManager.getInstance().getConnection();
+        try (
              PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setString(1, id);
@@ -71,8 +75,8 @@ public class UserJdbcRepository implements UserRepository {
 
         String sql = "INSERT INTO users (id, login, password_hash, role) VALUES (?, ?, ?, ?) " +
                 "ON CONFLICT (id) DO UPDATE SET login = EXCLUDED.login, role = EXCLUDED.role";
-
-        try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (
              PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setString(1, toSave.getId());
@@ -82,6 +86,8 @@ public class UserJdbcRepository implements UserRepository {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Blad podczas zapisywania uzytkownika", e);
+        }finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
         return toSave;
     }
@@ -89,8 +95,8 @@ public class UserJdbcRepository implements UserRepository {
     @Override
     public Optional<User> findByLogin(String login) {
         String sql = "SELECT id, login, password_hash, role FROM users WHERE login = ?";
-
-        try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (
              PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setString(1, login);
@@ -101,6 +107,8 @@ public class UserJdbcRepository implements UserRepository {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Blad podczas szukania uzytkownika po loginie", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
         return Optional.empty();
     }
@@ -108,14 +116,16 @@ public class UserJdbcRepository implements UserRepository {
     @Override
     public void deleteById(String id) {
         String sql = "DELETE FROM users WHERE id = ?";
-
-        try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+        try (
              PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setString(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Blad podczas usuwania uzytkownika", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 

@@ -8,7 +8,9 @@ import com.umcsuser.carrent.repositories.impl.hibernate.RentalHibernateRepositor
 import com.umcsuser.carrent.repositories.impl.hibernate.UserHibernateRepository;
 import com.umcsuser.carrent.repositories.impl.hibernate.VehicleHibernateRepository;
 import com.umcsuser.carrent.services.RentalServiceInterface;
-import jakarta.transaction.Transactional;import org.hibernate.Session;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+import org.hibernate.Session;
 import org.hibernate.Transaction;import org.springframework.context.annotation.Profile;import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,18 +30,9 @@ public class RentalHibernateService implements RentalServiceInterface {
         this.vehicleRepo = vehicleRepo;
         this.userRepo = userRepo;
     }
-    private void setSession(Session session) {
-        rentalRepo.setSession(session);
-        vehicleRepo.setSession(session);
-        userRepo.setSession(session);
-    }
 
     @Override
     public Rental rentVehicle(String userId, String vehicleId) {
-        Transaction tx = null;
-        try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
-            tx = session.beginTransaction();
-            setSession(session);
 
             if (userHasActiveRental(userId)) {
                 throw new IllegalStateException("Użytkownik ma już aktywne wypożyczenie.");
@@ -61,59 +54,39 @@ public class RentalHibernateService implements RentalServiceInterface {
                     .rentDateTime(LocalDateTime.now().toString())
                     .build();
 
-            Rental saved = rentalRepo.save(rental);
-            tx.commit();
-            return saved;
-        } catch (RuntimeException e) {
-            if (tx != null) tx.rollback();
-            throw e;
-        }
+
+        return rentalRepo.save(rental);
     }
 
     @Override
     public Rental returnVehicle(String userId) {
-        Transaction tx = null;
-        try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
-            tx = session.beginTransaction();
-            setSession(session);
 
             Rental rental = rentalRepo.findByUserIdAndReturnDateIsNull(userId)
                     .orElseThrow(() -> new IllegalStateException("Brak aktywnego wypożyczenia."));
 
             rental.setReturnDateTime(LocalDateTime.now().toString());
-            Rental saved = rentalRepo.save(rental);
-            tx.commit();
-            return saved;
-        } catch (RuntimeException e) {
-            if (tx != null) tx.rollback();
-            throw e;
-        }
+            return rentalRepo.save(rental);
+
     }
 
     @Override
     public Optional<Rental> findActiveRentalByUserId(String userId) {
-        try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
-            rentalRepo.setSession(session);
             return rentalRepo.findByUserIdAndReturnDateIsNull(userId);
-        }
+
     }
 
     @Override
-    public List<Rental> findAllRentals() {
-        try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
-            rentalRepo.setSession(session);
+    public List<Rental> findAllRentals() {;
             return rentalRepo.findAll();
-        }
+
     }
 
     @Override
     public List<Rental> findUserRentals(String userId) {
-        try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
-            rentalRepo.setSession(session);
             return rentalRepo.findAll().stream()
                     .filter(r -> r.getUserId().equals(userId))
                     .toList();
-        }
+
     }
 
     @Override
@@ -123,9 +96,7 @@ public class RentalHibernateService implements RentalServiceInterface {
 
     @Override
     public boolean vehicleHasActiveRental(String vehicleId) {
-        try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
-            rentalRepo.setSession(session);
-            return rentalRepo.findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent();
-        }
+        return rentalRepo.findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent();
+
     }
 }

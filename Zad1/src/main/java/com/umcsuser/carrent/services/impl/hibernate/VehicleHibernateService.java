@@ -21,72 +21,41 @@ public class VehicleHibernateService implements VehicleServiceInterface {
 
     @Override
     public List<Vehicle> findAllVehicles() {
-        try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
-            vehicleRepo.setSession(session);
-            return vehicleRepo.findAll();
-        }
+        return vehicleRepo.findAll();
     }
 
     @Override
     public List<Vehicle> findAvailableVehicles() {
-        try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
-            vehicleRepo.setSession(session);
-            rentalRepo.setSession(session);
-            return vehicleRepo.findAll().stream()
-                    .filter(v -> rentalRepo.findByVehicleIdAndReturnDateIsNull(v.getId()).isEmpty())
-                    .toList();
-        }
+        return vehicleRepo.findAll().stream()
+                .filter(v -> rentalRepo.findByVehicleIdAndReturnDateIsNull(v.getId()).isEmpty())
+                .toList();
     }
 
     @Override
     public Vehicle findById(String id) {
-        try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
-            vehicleRepo.setSession(session);
-            return vehicleRepo.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono pojazdu: " + id));
-        }
+        return vehicleRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono pojazdu: " + id));
+
     }
 
     @Override
     public Vehicle addVehicle(Vehicle vehicle) {
-        Transaction tx = null;
-        try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
-            tx = session.beginTransaction();
-            vehicleRepo.setSession(session);
-            Vehicle saved = vehicleRepo.save(vehicle);
-            tx.commit();
-            return saved;
-        } catch (RuntimeException e) {
-            if (tx != null) tx.rollback();
-            throw e;
-        }
+        return vehicleRepo.save(vehicle);
     }
 
     @Override
     public void removeVehicle(String vehicleId) {
-        Transaction tx = null;
-        try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
-            tx = session.beginTransaction();
-            vehicleRepo.setSession(session);
-            rentalRepo.setSession(session);
-
-            if (rentalRepo.findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent()) {
-                throw new IllegalStateException("Nie można usunąć wypożyczonego pojazdu.");
-            }
-
-            vehicleRepo.deleteById(vehicleId);
-            tx.commit();
-        } catch (RuntimeException e) {
-            if (tx != null) tx.rollback();
-            throw e;
+        if (rentalRepo.findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent()) {
+            throw new IllegalStateException("Nie można usunąć wypożyczonego pojazdu.");
         }
+        vehicleRepo.deleteById(vehicleId);
     }
+
 
     @Override
     public boolean isVehicleRented(String vehicleId) {
-        try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
-            rentalRepo.setSession(session);
-            return rentalRepo.findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent();
-        }
+        return rentalRepo.findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent();
     }
 }
+
+
