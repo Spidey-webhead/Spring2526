@@ -62,6 +62,8 @@ public class UserJdbcRepository implements UserRepository {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Blad podczas szukania uzytkownika po ID", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
         return Optional.empty();
     }

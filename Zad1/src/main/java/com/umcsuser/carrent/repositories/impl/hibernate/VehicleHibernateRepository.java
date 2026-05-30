@@ -17,7 +17,7 @@ import java.util.UUID;
 public class VehicleHibernateRepository implements VehicleRepository {
    @PersistenceContext
     private EntityManager entityManager;
-    private Session session;
+
 
     @Override
     public Vehicle save(Vehicle vehicle) {

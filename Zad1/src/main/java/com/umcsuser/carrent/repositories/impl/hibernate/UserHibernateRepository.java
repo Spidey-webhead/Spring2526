@@ -29,9 +29,11 @@ public class UserHibernateRepository implements UserRepository {
 
     @Override
     public Optional<User> findByLogin(String login) {
-        Query<User> query = (Query<User>) entityManager.createQuery("FROM User u WHERE u.login = :login", User.class);
-        query.setParameter("login", login);
-        return query.uniqueResultOptional();
+       return entityManager.createQuery("FROM User u WHERE u.login = :login", User.class)
+               .setParameter("login", login)
+               .getResultStream()
+               .findFirst();
+
     }
 
     @Override

@@ -42,18 +42,20 @@ public class RentalHibernateRepository implements RentalRepository {
 
     @Override
     public Optional<Rental> findByVehicleIdAndReturnDateIsNull(String vehicleId) {
-        Query<Rental> query = (Query<Rental>) entityManager.createQuery(
-                "FROM Rental r WHERE r.vehicle.id = :vehicleId AND r.returnDateTime IS NULL", Rental.class);
-        query.setParameter("vehicleId", vehicleId);
-        return query.uniqueResultOptional();
+        return entityManager.createQuery(
+                "FROM Rental r WHERE r.vehicle.id = :vehicleId AND r.returnDateTime IS NULL", Rental.class)
+                .setParameter("vehicleId", vehicleId)
+                .getResultStream()
+                .findFirst();
     }
 
     @Override
     public Optional<Rental> findByUserIdAndReturnDateIsNull(String userId) {
-        Query<Rental> query = (Query<Rental>) entityManager.createQuery(
-                "FROM Rental r WHERE r.user.id = :userId AND r.returnDateTime IS NULL", Rental.class);
-        query.setParameter("userId", userId);
-        return query.uniqueResultOptional();
+        return entityManager.createQuery(
+                "FROM Rental r WHERE r.user.id = :userId AND r.returnDateTime IS NULL", Rental.class)
+                .setParameter("userId", userId)
+                .getResultStream()
+                .findFirst();
     }
 
 

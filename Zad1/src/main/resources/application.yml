@@ -1,6 +1,6 @@
 spring:
  profiles:
-  active: ${APP_PROFILE:jpa}
+  active: ${APP_PROFILE:hibernate}
  main:
   banner-mode: off
 

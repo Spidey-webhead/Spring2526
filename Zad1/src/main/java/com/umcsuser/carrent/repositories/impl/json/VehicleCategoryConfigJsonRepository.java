@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 @Repository
-@Profile("jpa")
+@Profile({"json", "jdbc", "jpa", "hibernate"})
 public class VehicleCategoryConfigJsonRepository implements VehicleCategoryRepository {
     private final JsonFileStorage<VehicleCategoryConfig> storage = new JsonFileStorage<>("categories.json",
             new TypeToken<List<VehicleCategoryConfig>>() {}.getType());
